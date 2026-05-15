@@ -54,9 +54,14 @@ public class PlayerMovement : MonoBehaviour
         if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) v += 1f;
         _moveInput = new Vector2(h, v);
 
-        _lookInput = mouse.delta.ReadValue();
-        _isSprinting = keyboard.leftShiftKey.isPressed;
-        _jumpPressed = keyboard.spaceKey.wasPressedThisFrame;
+        if (keyboard.escapeKey.wasPressedThisFrame)
+            UIManager.Instance?.TogglePause();
+
+        bool paused = UIManager.Instance != null && UIManager.Instance.IsPaused;
+        _lookInput = paused ? Vector2.zero : mouse.delta.ReadValue();
+        _isSprinting = !paused && keyboard.leftShiftKey.isPressed;
+        _jumpPressed = !paused && keyboard.spaceKey.wasPressedThisFrame;
+        if (paused) _moveInput = Vector2.zero;
     }
 
     private void HandleMouseLook()
