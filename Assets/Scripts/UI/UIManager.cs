@@ -67,10 +67,49 @@ public class UIManager : MonoBehaviour
 
     public void QuitGame()
     {
+        GameManger.Instance?.SaveGame();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
+    }
+
+    // Call these from your settings panel sliders / dropdowns
+    public void SetMasterVolume(float value)
+    {
+        AudioListener.volume = value;
+        PatchSetting(d => d.masterVolume = value);
+    }
+
+    public void SetMusicVolume(float value)  => PatchSetting(d => d.musicVolume = value);
+    public void SetSfxVolume(float value)    => PatchSetting(d => d.sfxVolume = value);
+
+    public void SetGraphicsQuality(int index)
+    {
+        QualitySettings.SetQualityLevel(index, true);
+        PatchSetting(d => d.graphicsQuality = index);
+    }
+
+    public void SetFullscreen(bool value)
+    {
+        Screen.fullScreen = value;
+        PatchSetting(d => d.fullscreen = value);
+    }
+
+    public void SetMouseSensitivity(float value)
+    {
+        FindFirstObjectByType<PlayerMovement>()?.ApplySaveSensitivity(value);
+        PatchSetting(d => d.mouseSensitivity = value);
+    }
+
+    private void PatchSetting(System.Action<SaveData> patch)
+    {
+        if (SaveManager.Instance == null) return;
+        SaveData data = SaveManager.Instance.HasSave()
+            ? SaveManager.Instance.Load()
+            : new SaveData();
+        patch(data);
+        SaveManager.Instance.Save(data);
     }
 }

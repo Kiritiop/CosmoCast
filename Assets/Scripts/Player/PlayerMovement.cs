@@ -33,6 +33,29 @@ public class PlayerMovement : MonoBehaviour
             cameraTransform = Camera.main.transform;
     }
 
+    public void ApplySaveData(SaveData data)
+    {
+        // Warp CharacterController to avoid collision fighting
+        _controller.enabled = false;
+        transform.SetPositionAndRotation(
+            new Vector3(data.posX, data.posY, data.posZ),
+            Quaternion.Euler(0f, data.rotY, 0f));
+        _controller.enabled = true;
+
+        mouseSensitivity = data.mouseSensitivity;
+    }
+
+    public void ApplySaveSensitivity(float value) => mouseSensitivity = value;
+
+    public void PopulateSaveData(SaveData data)
+    {
+        data.posX = transform.position.x;
+        data.posY = transform.position.y;
+        data.posZ = transform.position.z;
+        data.rotY = transform.eulerAngles.y;
+        data.mouseSensitivity = mouseSensitivity;
+    }
+
     void Update()
     {
         ReadInput();
