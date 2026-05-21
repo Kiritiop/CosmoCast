@@ -11,11 +11,11 @@ public class Spell
     private string _effect;
 
     public bool learned;
-    public Spell(string element, string spellname, float? damage = null, string? effect = null)
+    public Spell(string element, string spellname, float? damage = null, string effect = null)
     {
         this.name = spellname;
         this._element = element;
-        this._damage = damage;
+        this._damage = (float)damage;
         this._effect = effect;
     }
 
@@ -25,52 +25,23 @@ public class Spell
     }
     public void activateSpell(Entity target, Entity caster)
     {
-        if (this._damage != null)
-        {
-            target.Damage(caster.damageOut(this._damage));
-        }
+        target.Damage(this._damage);
         target.inflict(this._effect);
     }
     
 }
-
-//public class DOTSpell : Spell
-//{
-//    public int turntime;
-//    public float tickdamage;
-
-//    public DOTSpell(string element, int turntime, float damage, string name) : base(element,name)
-//    {
-//        this.turntime = turntime;
-//        this.tickdamage = damage;
-//    }
-//    public float? activateDamage()
-//    {
-//        if (turntime > 0)
-//        {
-//            return tickdamage;
-//        }
-//        return null;
-//    }
-//}
-
-public class DMGSpell : Spell
+public class Effect
 {
     private float _damage;
-    private string _effect;
+    private int _turntime;
+    private string _effectName;
+    private int _effectTier;
 
-    public DMGSpell(string name, string element, string? effect, float damage) : base(element, name)
+    public Effect(float damage, int turntime, string effectName, int effectTier)
     {
         this._damage = damage;
-        this._effect = effect;
+        this._turntime = turntime;
+        this._effectName = effectName;
+        this._effectTier = effectTier;
     }
-
-    public float? activateSpell(Entity entity)
-    {
-        entity.inflict(this._effect);
-        return _damage;
-    }
-
 }
-
-
