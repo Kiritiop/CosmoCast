@@ -23,19 +23,26 @@ public class PlayerMovement : MonoBehaviour
     private bool _jumpPressed;
     private bool _isSprinting;
 
-    void Start()
+    void Awake()
     {
         _controller = GetComponent<CharacterController>();
+    }
+
+    void Start()
+    {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         if (cameraTransform == null)
             cameraTransform = Camera.main.transform;
+
+        // Load position here so _controller is guaranteed to exist
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSave())
+            ApplySaveData(SaveManager.Instance.Load());
     }
 
     public void ApplySaveData(SaveData data)
     {
-        // Warp CharacterController to avoid collision fighting
         _controller.enabled = false;
         transform.SetPositionAndRotation(
             new Vector3(data.posX, data.posY, data.posZ),

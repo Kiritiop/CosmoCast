@@ -59,15 +59,8 @@ public class GameManger : MonoBehaviour
     {
         if (SaveManager.Instance == null || !SaveManager.Instance.HasSave()) return;
 
-        SaveData data = SaveManager.Instance.Load();
-
-        // Apply settings immediately (no player needed)
-        ApplySettings(data);
-
-        // Apply player data once the player exists
-        var player = FindFirstObjectByType<PlayerMovement>();
-        if (player != null)
-            player.ApplySaveData(data);
+        // Player loads its own position in Start() after _controller is ready
+        ApplySettings(SaveManager.Instance.Load());
     }
 
     public static void ApplySettings(SaveData data)
