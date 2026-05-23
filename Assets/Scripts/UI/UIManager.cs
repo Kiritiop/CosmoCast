@@ -82,7 +82,11 @@ public class UIManager : MonoBehaviour
         PatchSetting(d => d.masterVolume = value);
     }
 
-    public void SetMusicVolume(float value)  => PatchSetting(d => d.musicVolume = value);
+    public void SetMusicVolume(float value)
+    {
+        BGMManager.Instance?.SetVolume(value);
+        PatchSetting(d => d.musicVolume = value);
+    }
     public void SetSfxVolume(float value)    => PatchSetting(d => d.sfxVolume = value);
 
     public void SetGraphicsQuality(int index)

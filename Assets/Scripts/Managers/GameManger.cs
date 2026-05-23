@@ -68,5 +68,6 @@ public class GameManger : MonoBehaviour
         QualitySettings.SetQualityLevel(data.graphicsQuality, true);
         Screen.fullScreen = data.fullscreen;
         AudioListener.volume = data.masterVolume;
+        BGMManager.Instance?.SetVolume(data.musicVolume);
     }
 }
