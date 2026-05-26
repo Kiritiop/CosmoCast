@@ -567,7 +567,7 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
+  cameraUsageDescription: Used for gesture casting
   locationUsageDescription: 
   microphoneUsageDescription: 
   bluetoothUsageDescription: 
