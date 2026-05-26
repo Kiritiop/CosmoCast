@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Spell
 {
-    public string _element;
 
     public string name;
 
@@ -12,10 +11,9 @@ public class Spell
     private Effect _effect;
 
     public bool learned;
-    public Spell(string element, string spellname, float? damage = null, Effect effect = null)
+    public Spell(string spellname, float? damage = null, Effect effect = null)
     {
         this.name = spellname;
-        this._element = element;
         this._damage = (float)damage;
         this._effect = effect;
     }
@@ -24,7 +22,7 @@ public class Spell
     {
         this.learned = true;
     }
-    public void activateSpell(Entity target, Entity caster)
+    public void Cast(Entity target, Entity caster)
     {
         target.Damage(this._damage);
         target.inflict(this._effect);
@@ -33,8 +31,8 @@ public class Spell
 }
 public class Effect
 {
-    private int _baseDamage;
-    private int _count;
+    protected int _baseDamage;
+    protected int _count;
     private string _effectName;
     protected int _effectTier;
 
@@ -84,5 +82,26 @@ public class Impaled : Effect //deals damage every time the enemy makes an actio
         this.spikenumber = spikenumber;
     }
 
+    public override double Activate()
+    {
+        return spikenumber * this._baseDamage;
+    }
     
+}
+
+public class Damage
+{
+    private int _value;
+    public string element;
+
+    public Damage(int value, string element)
+    {
+        this._value = value;
+        this.element = element;
+    }
+
+    public int getDamage()
+    {
+        return this._value;
+    }
 }
