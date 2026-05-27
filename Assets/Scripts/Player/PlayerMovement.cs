@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+
+    public static bool IsInventoryOpen = false;
+
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float sprintSpeed = 9f;
@@ -96,6 +99,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMouseLook()
     {
+
+        if (IsInventoryOpen) return;
+
         _xRotation -= _lookInput.y * mouseSensitivity;
         _xRotation = Mathf.Clamp(_xRotation, -85f, 85f);
 

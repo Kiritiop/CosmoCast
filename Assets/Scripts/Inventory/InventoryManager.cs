@@ -5,6 +5,8 @@ public class InventoryManager : MonoBehaviour
 {
     private Item[] _objects;
     private int _cursor;
+    [SerializeField] private GameObject Inventory_Bg;
+
     
     public InventoryManager()
     {
@@ -30,12 +32,20 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
+    public void DisplayInventory()
+    {
+        Debug.Log("DisplayInventory called");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Instantiate(Inventory_Bg, transform);
+        DisplayInventory(new Vector3(-950,-301,0), new Vector3(-10,0,0));
+    }
+
+    private void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
     {
         for (int i = 0; i < _cursor; i++)
         {
             Item currentItem = _objects[i];
-
             if (currentItem != null && currentItem.itemPrefab != null)
             {
                 Vector3 spawnPosition = startPosition + (spacingOffset * i);
