@@ -5,7 +5,7 @@ public class InventoryManager : MonoBehaviour
 {
     private Item[] _objects;
     private int _cursor;
-
+    
     public InventoryManager()
     {
         this._objects = new Item[0];
@@ -15,7 +15,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (_objects.Length == _cursor)
         {
-            Item[] result = new Item[_objects.Length + 3];
+            Item[] result = new Item[_objects.Length + 1];
 
             for (int i = 0; i < _objects.Length; i++)
             {
@@ -27,6 +27,27 @@ public class InventoryManager : MonoBehaviour
         else
         {
             _objects[_cursor++] = item;
+        }
+    }
+
+    public void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
+    {
+        for (int i = 0; i < _cursor; i++)
+        {
+            Item currentItem = _objects[i];
+
+            if (currentItem != null && currentItem.itemPrefab != null)
+            {
+                Vector3 spawnPosition = startPosition + (spacingOffset * i);
+
+                GameObject spawnedItem = Instantiate(currentItem.itemPrefab, spawnPosition, Quaternion.identity);
+                
+                spawnedItem.name = currentItem.itemName + "_" + i;
+            }
+            else
+            {
+                Debug.LogWarning($"Item at index {i} is missing a assigned prefab!");
+            }
         }
     }
 

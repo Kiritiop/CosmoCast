@@ -5,6 +5,7 @@ public class Item : ScriptableObject
     public string itemName;
     public Sprite itemIcon;
     public string rarity; 
+    public GameObject itemPrefab;
 
     public virtual void Use()
     {
