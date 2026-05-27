@@ -6,15 +6,15 @@ public class Spell
 
     public string name;
 
-    private float _damage;
+    public Damage damage;
 
     private Effect _effect;
 
     public bool learned;
-    public Spell(string spellname, float? damage = null, Effect effect = null)
+    public Spell(string spellname, Damage damage = null, Effect effect = null)
     {
         this.name = spellname;
-        this._damage = (float)damage;
+        this.damage = damage;
         this._effect = effect;
     }
 
@@ -24,7 +24,7 @@ public class Spell
     }
     public void Cast(Entity target, Entity caster)
     {
-        target.Damage(this._damage);
+        target.Damage(this.damage);
         target.inflict(this._effect);
     }
     
