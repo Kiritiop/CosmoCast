@@ -1,11 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
 
 public class InventoryManager : MonoBehaviour
 {
-    private Item[] _objects;
+    public Item[] _objects;
     private int _cursor;
-    [SerializeField] private GameObject Inventory_Bg;
+    [SerializeField] public GameObject Inventory_Bg;
+    private bool _isOpen = false;
 
     
     public InventoryManager()
@@ -32,17 +35,32 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void DisplayInventory()
+    public void Update()
     {
-        Debug.Log("DisplayInventory called");
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Instantiate(Inventory_Bg, transform);
-        DisplayInventory(new Vector3(-950,-301,0), new Vector3(-10,0,0));
+        ReadInput();
+    }
+
+    public void ReadInput()
+    {
+        var keyboard = Keyboard.current;
+        if (Keyboard.current.eKey.wasPressedThisFrame && _isOpen == false) 
+        {
+            DisplayInventory(new Vector3(-950,-301,0), new Vector3(-10,0,0));
+        }
+        else if (Keyboard.current.eKey.wasPressedThisFrame && _isOpen == true) 
+        {
+            CloseInventory();
+        }
     }
 
     private void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
     {
+        this._isOpen = true;
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Inventory_Bg.SetActive (true);
+
         for (int i = 0; i < _cursor; i++)
         {
             Item currentItem = _objects[i];
@@ -59,6 +77,15 @@ public class InventoryManager : MonoBehaviour
                 Debug.LogWarning($"Item at index {i} is missing a assigned prefab!");
             }
         }
+    }
+
+    private void CloseInventory()
+    {
+        this._isOpen = false;
+        Time.timeScale = 1f;
+        Inventory_Bg.SetActive (false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
     }
 
     public Item Getint(int index)
