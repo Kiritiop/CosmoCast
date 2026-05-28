@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,6 +27,21 @@ public class UIManager : MonoBehaviour
         settingsPanel.SetActive(false);
     }
 
+    void Update()
+    {
+        if (Keyboard.current == null) return;
+        if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
+
+        // Settings panel takes priority — back out of it first
+        if (settingsPanel.activeSelf) { BackFromSettings(); return; }
+
+        // Pause menu is open — resume
+        if (_isPaused) { Resume(); return; }
+
+        // Pause always takes priority over battle
+        Pause();
+    }
+
     public bool IsPaused => _isPaused;
 
     public void TogglePause()
@@ -48,9 +64,18 @@ public class UIManager : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         settingsPanel.SetActive(false);
         Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         _isPaused = false;
+
+        if (BattleManager.Instance != null && BattleManager.Instance.IsInBattle)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     public void OpenSettings()

@@ -5,7 +5,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; private set; }
 
     [Header("Battle UI Root")]
-    [SerializeField] private GameObject battleUI; // parent that holds ALL battle panels
+    [SerializeField] private GameObject battleUI;
 
     public bool IsInBattle { get; private set; }
 
@@ -17,7 +17,6 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        // Always hidden when the scene loads
         battleUI.SetActive(false);
     }
 
@@ -28,7 +27,9 @@ public class BattleManager : MonoBehaviour
         IsInBattle = true;
         battleUI.SetActive(true);
 
-        // Freeze player movement during battle
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         var player = FindFirstObjectByType<PlayerMovement>();
         if (player != null) player.enabled = false;
 
@@ -42,10 +43,15 @@ public class BattleManager : MonoBehaviour
         IsInBattle = false;
         battleUI.SetActive(false);
 
-        // Restore player movement
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         var player = FindFirstObjectByType<PlayerMovement>();
         if (player != null) player.enabled = true;
 
         Debug.Log("Battle ended!");
     }
+
+    // Called by a Flee / Exit button in the battle UI
+    public void FleeBattle() => EndBattle();
 }

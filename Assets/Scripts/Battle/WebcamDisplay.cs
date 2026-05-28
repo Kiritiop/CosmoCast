@@ -30,13 +30,18 @@ public class WebcamDisplay : MonoBehaviour
 
     void Update()
     {
-        if (_cam == null || !_cam.didUpdateThisFrame) return;
+        if (_cam == null) return;
 
-        // Keep aspect ratio correct once the camera reports real dimensions
+        // Pause/resume webcam with game pause state
+        bool paused = UIManager.Instance != null && UIManager.Instance.IsPaused;
+        if (paused && _cam.isPlaying) { _cam.Pause(); return; }
+        if (!paused && !_cam.isPlaying) _cam.Play();
+
+        if (!_cam.didUpdateThisFrame) return;
+
         if (_fitter != null && _cam.width > 16)
             _fitter.aspectRatio = (float)_cam.width / _cam.height;
 
-        // Mirror horizontally so it feels like a mirror, not a surveillance feed
         _display.uvRect = new Rect(1, 0, -1, 1);
     }
 
