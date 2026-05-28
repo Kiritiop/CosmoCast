@@ -56,6 +56,7 @@ public class InventoryManager : MonoBehaviour
     private void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
     {
         this._isOpen = true;
+        PlayerMovement.IsInventoryOpen = true;
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -82,9 +83,10 @@ public class InventoryManager : MonoBehaviour
     private void CloseInventory()
     {
         this._isOpen = false;
+        PlayerMovement.IsInventoryOpen = false;
         Time.timeScale = 1f;
         Inventory_Bg.SetActive (false);
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
