@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject skillTreePanel;
 
     private bool _isPaused;
 
@@ -24,6 +25,7 @@ public class UIManager : MonoBehaviour
     {
         pauseMenuPanel.SetActive(false);
         settingsPanel.SetActive(false);
+        skillTreePanel.SetActive(false);
     }
 
     public bool IsPaused => _isPaused;
@@ -33,7 +35,14 @@ public class UIManager : MonoBehaviour
         if (_isPaused) Resume();
         else Pause();
     }
-
+    public void ToggleSkillPanel()
+    {
+        skillTreePanel.SetActive(true);
+        if (skillTreePanel.activeSelf)
+        {
+            skillTreePanel.SetActive(false);
+        }
+    }
     public void Pause()
     {
         pauseMenuPanel.SetActive(true);
