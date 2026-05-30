@@ -1,16 +1,17 @@
 using UnityEngine;
 
-// Attach this to any enemy GameObject that has a 3D Collider set to "Is Trigger"
-// (Use BoxCollider or SphereCollider — NOT Collider2D, the player uses CharacterController which is 3D)
+// Attach to any enemy GameObject with a 3D Trigger Collider.
+// Assign the matching EnemyData ScriptableObject in the Inspector.
 public class EnemyEncounterTrigger : MonoBehaviour
 {
+    [SerializeField] private EnemyData enemyData;
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
+        if (BattleManager.Instance == null) return;
 
-        BattleManager.Instance?.StartBattle();
-
-        // Disable this trigger so it doesn't fire again mid-battle
+        BattleManager.Instance.StartBattle(enemyData, gameObject);
         GetComponent<Collider>().enabled = false;
     }
 }
