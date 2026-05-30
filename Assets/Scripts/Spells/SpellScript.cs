@@ -1,10 +1,10 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Spell
+public class Spell : ScriptableObject
 {
 
-    public string name;
+    public string spellName;
 
     public Damage damage;
 
@@ -13,7 +13,7 @@ public class Spell
     public bool learned;
     public Spell(string spellname, Damage damage = null, Effect effect = null)
     {
-        this.name = spellname;
+        this.spellName = spellname;
         this.damage = damage;
         this._effect = effect;
     }
