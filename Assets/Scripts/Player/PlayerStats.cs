@@ -5,6 +5,15 @@ public class PlayerStats : MonoBehaviour
     public static PlayerStats Instance { get; private set; }
 
     [SerializeField] public int maxHP = 100;
+
+    public float earthDMG = 1;
+    public float fireDMG = 1;
+    public float waterDMG = 1;
+    public float airDMG = 1;
+    public float defense = 1;
+    public float strength = 1;
+    public Hat equippedHat;
+    public Rune equippedRune;
     public int CurrentHP { get; private set; }
 
     void Awake()
