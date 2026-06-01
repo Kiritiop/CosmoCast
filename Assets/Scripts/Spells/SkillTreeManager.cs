@@ -1,22 +1,16 @@
 using UnityEngine;
+using System;
+using UnityEngine.InputSystem;
 public class SkillTreeManager : MonoBehaviour
 {
-    [Header("SpellScript")]
-    [SerializeField] private ScriptableObject SpellScript;
+    public static SkillTreeManager Instance { get; private set; }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Awake()
     {
-        
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    private void DisplaySpellBook(Vector3 startPosition, Vector3 spacingOffset)
-    {
-        
-    }
+    
 }
