@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyData : ScriptableObject
 {
     public string enemyName = "Enemy";
-    public Sprite sprite;
     public int maxHP = 30;
     public int attackDamage = 5;
+    public int coinReward = 100;
 }

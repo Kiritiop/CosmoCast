@@ -11,9 +11,13 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject battleUI;
 
     [Header("Enemy Display")]
-    [SerializeField] private Image enemyImage;
+    [SerializeField] private RawImage enemyRawImage;   // assign a RawImage in top-right of battle UI
     [SerializeField] private TextMeshProUGUI enemyNameText;
     [SerializeField] private TextMeshProUGUI enemyHPText;
+
+    [Header("Enemy Preview Camera")]
+    [SerializeField] private Camera previewCamera;     // dedicated camera, Culling Mask = EnemyPreview layer only
+    [SerializeField] private Vector3 previewCameraOffset = new Vector3(0f, 1f, -3f);
 
     [Header("Player Display")]
     [SerializeField] private TextMeshProUGUI playerHPText;
@@ -27,13 +31,18 @@ public class BattleManager : MonoBehaviour
 
     public bool IsInBattle { get; private set; }
 
-    // -1 = not started, 0 = player turn, 1 = enemy turn
     private int _turn = -1;
     private bool _awaitingPlayerAction;
 
     private EnemyData _currentEnemy;
     private int _enemyCurrentHP;
     private GameObject _enemyObject;
+
+    private RenderTexture _previewRT;
+    private GameObject _previewClone;
+
+    // Layer named "EnemyPreview" — set this up in Project Settings > Tags and Layers
+    private const string PreviewLayer = "EnemyPreview";
 
     void Awake()
     {
@@ -44,9 +53,9 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         battleUI.SetActive(false);
+        if (previewCamera != null) previewCamera.gameObject.SetActive(false);
     }
 
-    // Called by EnemyEncounterTrigger
     public void StartBattle(EnemyData enemy, GameObject enemyObject)
     {
         if (IsInBattle) return;
@@ -64,6 +73,7 @@ public class BattleManager : MonoBehaviour
         var player = FindFirstObjectByType<PlayerMovement>();
         if (player != null) player.enabled = false;
 
+        SetupEnemyPreview(enemyObject);
         RefreshEnemyUI();
         RefreshPlayerUI();
         SetLog($"A wild {(_currentEnemy != null ? _currentEnemy.enemyName : "enemy")} appeared!");
@@ -79,6 +89,8 @@ public class BattleManager : MonoBehaviour
         IsInBattle = false;
         _turn = -1;
         _awaitingPlayerAction = false;
+
+        TeardownEnemyPreview();
         battleUI.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -100,9 +112,7 @@ public class BattleManager : MonoBehaviour
     // Called by Item button
     public void UseItem()
     {
-        if (!IsInBattle || !_awaitingPlayerAction || _turn != 0) return;
-        // Placeholder — hook up to InventoryManager when item use in battle is ready
-        SetLog("You rummaged through your bag... (no usable items yet)");
+        // TODO: open inventory potions tab
     }
 
     // Called by Flee button
@@ -122,13 +132,14 @@ public class BattleManager : MonoBehaviour
 
         if (_enemyCurrentHP <= 0)
         {
-            SetLog($"{_currentEnemy.enemyName} was defeated!");
+            int reward = _currentEnemy.coinReward;
+            PlayerWallet.Instance?.AddCoins(reward);
+            SetLog($"{_currentEnemy.enemyName} was defeated! You earned {reward} coins!");
             yield return new WaitForSeconds(1f);
             EndBattle();
             yield break;
         }
 
-        // Enemy turn
         _turn = 1;
         yield return StartCoroutine(EnemyTurnRoutine());
     }
@@ -152,7 +163,6 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        // Back to player turn
         _turn = 0;
         _awaitingPlayerAction = true;
         SetActionsInteractable(true);
@@ -165,19 +175,77 @@ public class BattleManager : MonoBehaviour
         EndBattle();
     }
 
+    // --- Enemy preview via RenderTexture ---
+
+    private void SetupEnemyPreview(GameObject enemyObject)
+    {
+        if (previewCamera == null || enemyRawImage == null || enemyObject == null) return;
+
+        int previewLayerIndex = LayerMask.NameToLayer(PreviewLayer);
+        if (previewLayerIndex < 0)
+        {
+            Debug.LogWarning($"[BattleManager] Layer '{PreviewLayer}' not found. Add it in Project Settings > Tags and Layers.");
+            return;
+        }
+
+        // Clone the enemy mesh into a hidden preview position
+        _previewClone = Instantiate(enemyObject, new Vector3(0f, -1000f, 0f), enemyObject.transform.rotation);
+        SetLayerRecursive(_previewClone, previewLayerIndex);
+
+        // Position preview camera behind and slightly above the clone
+        previewCamera.transform.position = _previewClone.transform.position + previewCameraOffset;
+        previewCamera.transform.LookAt(_previewClone.transform.position + Vector3.up * 0.5f);
+        previewCamera.cullingMask = 1 << previewLayerIndex;
+
+        // Create RenderTexture sized to the RawImage rect
+        int w = Mathf.Max(1, (int)enemyRawImage.rectTransform.rect.width);
+        int h = Mathf.Max(1, (int)enemyRawImage.rectTransform.rect.height);
+        _previewRT = new RenderTexture(w, h, 16);
+        previewCamera.targetTexture = _previewRT;
+        enemyRawImage.texture = _previewRT;
+
+        previewCamera.gameObject.SetActive(true);
+    }
+
+    private void TeardownEnemyPreview()
+    {
+        if (previewCamera != null)
+        {
+            previewCamera.targetTexture = null;
+            previewCamera.gameObject.SetActive(false);
+        }
+
+        if (enemyRawImage != null)
+            enemyRawImage.texture = null;
+
+        if (_previewRT != null)
+        {
+            _previewRT.Release();
+            Destroy(_previewRT);
+            _previewRT = null;
+        }
+
+        if (_previewClone != null)
+        {
+            Destroy(_previewClone);
+            _previewClone = null;
+        }
+    }
+
+    private void SetLayerRecursive(GameObject go, int layer)
+    {
+        go.layer = layer;
+        foreach (Transform child in go.transform)
+            SetLayerRecursive(child.gameObject, layer);
+    }
+
+    // --- UI helpers ---
+
     private void RefreshEnemyUI()
     {
         if (_currentEnemy == null) return;
-
-        if (enemyImage != null)
-        {
-            enemyImage.sprite = _currentEnemy.sprite;
-            enemyImage.enabled = _currentEnemy.sprite != null;
-        }
-        if (enemyNameText != null)
-            enemyNameText.text = _currentEnemy.enemyName;
-        if (enemyHPText != null)
-            enemyHPText.text = $"HP: {_enemyCurrentHP}/{_currentEnemy.maxHP}";
+        if (enemyNameText != null) enemyNameText.text = _currentEnemy.enemyName;
+        if (enemyHPText != null) enemyHPText.text = $"HP: {_enemyCurrentHP}/{_currentEnemy.maxHP}";
     }
 
     private void RefreshPlayerUI()
@@ -188,8 +256,7 @@ public class BattleManager : MonoBehaviour
 
     private void SetLog(string message)
     {
-        if (battleLogText != null)
-            battleLogText.text = message;
+        if (battleLogText != null) battleLogText.text = message;
         Debug.Log($"[Battle] {message}");
     }
 
