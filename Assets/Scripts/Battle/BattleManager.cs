@@ -33,10 +33,15 @@ public class BattleManager : MonoBehaviour
 
     private int _turn = -1;
     private bool _awaitingPlayerAction;
+    private int _playerComboCount = 0;
 
     private EnemyData _currentEnemy;
     private int _enemyCurrentHP;
     private GameObject _enemyObject;
+
+    // Stores (attacker, damage) pairs for the current battle.
+    private System.Collections.Generic.List<(string attacker, int damage)> _turnHistory
+        = new System.Collections.Generic.List<(string, int)>();
 
     private RenderTexture _previewRT;
     private GameObject _previewClone;
@@ -64,6 +69,8 @@ public class BattleManager : MonoBehaviour
         _enemyObject = enemyObject;
         _enemyCurrentHP = enemy != null ? enemy.maxHP : 0;
 
+        _playerComboCount = 0;
+        _turnHistory.Clear();
         IsInBattle = true;
         battleUI.SetActive(true);
 
@@ -89,6 +96,9 @@ public class BattleManager : MonoBehaviour
         IsInBattle = false;
         _turn = -1;
         _awaitingPlayerAction = false;
+
+        if (_turnHistory.Count > 0)
+            Debug.Log($"[Battle] Summary:\n{BuildTurnSummary(0)}");
 
         TeardownEnemyPreview();
         battleUI.SetActive(false);
@@ -123,10 +133,22 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EndAfterDelay(1f));
     }
 
+    // Recursively multiplies damage by 1.1 for each combo hit beyond the first (max depth = comboCount).
+    private float ComboMultiplier(int comboCount)
+    {
+        if (comboCount <= 1) return 1f;
+        return 1.1f * ComboMultiplier(comboCount - 1);
+    }
+
     private IEnumerator PlayerAttackRoutine(int damage)
     {
-        _enemyCurrentHP = Mathf.Max(0, _enemyCurrentHP - damage);
-        SetLog($"You dealt {damage} damage to {_currentEnemy.enemyName}!");
+        _playerComboCount++;
+        int finalDamage = Mathf.RoundToInt(damage * ComboMultiplier(_playerComboCount));
+
+        _turnHistory.Add(("Player", finalDamage));
+        _enemyCurrentHP = Mathf.Max(0, _enemyCurrentHP - finalDamage);
+        SetLog($"You dealt {finalDamage} damage to {_currentEnemy.enemyName}!" +
+               (_playerComboCount > 1 ? $" (x{_playerComboCount} combo!)" : ""));
         RefreshEnemyUI();
         yield return new WaitForSeconds(1.2f);
 
@@ -147,6 +169,7 @@ public class BattleManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         int dmg = _currentEnemy != null ? _currentEnemy.attackDamage : 5;
+        _turnHistory.Add((_currentEnemy.enemyName, dmg));
         SetLog($"{_currentEnemy.enemyName} attacks!");
         yield return new WaitForSeconds(1f);
 
@@ -230,6 +253,14 @@ public class BattleManager : MonoBehaviour
             Destroy(_previewClone);
             _previewClone = null;
         }
+    }
+
+    // Recursively builds a summary string from the turn history list.
+    private string BuildTurnSummary(int index)
+    {
+        if (index >= _turnHistory.Count) return "";
+        var (attacker, dmg) = _turnHistory[index];
+        return $"  Turn {index + 1}: {attacker} dealt {dmg}\n" + BuildTurnSummary(index + 1);
     }
 
     private void SetLayerRecursive(GameObject go, int layer)
