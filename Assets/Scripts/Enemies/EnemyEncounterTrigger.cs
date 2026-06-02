@@ -11,7 +11,15 @@ public class EnemyEncounterTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         if (BattleManager.Instance == null) return;
 
+        Debug.Log($"[Encounter] Triggered by root: {GetRootName(transform)}");
         BattleManager.Instance.StartBattle(enemyData, gameObject);
         GetComponent<Collider>().enabled = false;
+    }
+
+    // Recursively walks up the hierarchy to find the root GameObject's name.
+    private static string GetRootName(Transform t)
+    {
+        if (t.parent == null) return t.name;
+        return GetRootName(t.parent);
     }
 }
