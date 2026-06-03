@@ -5,7 +5,14 @@ using UnityEngine.InputSystem;
 public class InventoryUI : MonoBehaviour
 {
     [SerializeField] public GameObject Inventory_Bg;
-    [SerializeField] public GameObject Icon;
+    [SerializeField] public Sprite HealthPotionSprite;
+    [SerializeField] public Sprite StrengthPotionSprite;
+    [SerializeField] public Sprite FireHatSprite;
+    [SerializeField] public Sprite EarthHatSprite;
+    [SerializeField] public Sprite WaterHatSprite;
+    [SerializeField] public Sprite AirHatSprite;
+    [SerializeField] public Sprite StrengthRuneSprite;
+    [SerializeField] public Sprite DefenseRuneSprite;
     private bool _isInvOpen;
     
     public void Start()
@@ -52,13 +59,7 @@ public class InventoryUI : MonoBehaviour
 
     public void DisplayPotions()
     {
-        GameObject InvIcon = Instantiate(Icon);
-        InvIcon.transform.SetParent(Inventory_Bg.transform, false);
-        InvIcon.transform.localPosition = new Vector3(0, 0, 0);
-
-        RectTransform rt = InvIcon.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(1000, 1000);
-
+        
     }
     public void DisplayHats()
     {
