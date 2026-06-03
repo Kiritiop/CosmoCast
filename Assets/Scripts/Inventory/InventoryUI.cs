@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
-    [SerializeField] GameObject Inventory_Bg;
-    [SerializeField] GameObject Icon;
+    [SerializeField] public GameObject Inventory_Bg;
+    [SerializeField] public GameObject Icon;
     private bool _isInvOpen;
     
     public void Start()
@@ -22,7 +22,7 @@ public class InventoryUI : MonoBehaviour
     {
         if (Keyboard.current.eKey.wasPressedThisFrame && _isInvOpen == false) 
         {
-            DisplayInventory(new Vector3(-950,-301,0), new Vector3(-10,0,0));
+            DisplayInventory(new Vector3(0,0,0), new Vector3(0,0,0));
         }
         else if (Keyboard.current.eKey.wasPressedThisFrame && _isInvOpen == true) 
         {
@@ -52,7 +52,13 @@ public class InventoryUI : MonoBehaviour
 
     public void DisplayPotions()
     {
-        // Display the inventory icons as per the amount of potions
+        GameObject InvIcon = Instantiate(Icon);
+        InvIcon.transform.SetParent(Inventory_Bg.transform, false);
+        InvIcon.transform.localPosition = new Vector3(0, 0, 0);
+
+        RectTransform rt = InvIcon.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(1000, 1000);
+
     }
     public void DisplayHats()
     {
