@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f200022a2f2184404a6e39f8645b2b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyEncounterTrigger
-  enemyData: {fileID: 0}
+  enemyData: {fileID: 11400000, guid: 3b5668606af504ff08358016f030ebd8, type: 2}
 --- !u!23 &175557744
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -361,7 +361,7 @@ Transform:
   m_GameObject: {fileID: 175557741}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.81, y: 0.09, z: -7.17}
+  m_LocalPosition: {x: -9.32, y: 0.09, z: -7.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -445,7 +445,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUI
   Inventory_Bg: {fileID: 4213494893572616590}
-  Icon: {fileID: 2414369724809373234, guid: 576bccfb2b731934db5577436f0cf6fc, type: 3}
+  HealthPotionSprite: {fileID: 0}
+  StrengthPotionSprite: {fileID: 0}
+  FireHatSprite: {fileID: 0}
+  EarthHatSprite: {fileID: 0}
+  WaterHatSprite: {fileID: 0}
+  AirHatSprite: {fileID: 0}
+  StrengthRuneSprite: {fileID: 0}
+  DefenseRuneSprite: {fileID: 0}
 --- !u!4 &224159764
 Transform:
   m_ObjectHideFlags: 0
@@ -2091,7 +2098,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 846, y: 116}
+  m_AnchoredPosition: {x: 1218, y: -109}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &745444870
@@ -2578,6 +2585,7 @@ GameObject:
   - component: {fileID: 865709404}
   - component: {fileID: 865709403}
   - component: {fileID: 865709402}
+  - component: {fileID: 865709408}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2724,6 +2732,27 @@ Transform:
   - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &865709408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865709401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8926da20e4a884489ab9287b1e851c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  maxHP: 100
+  earthDMG: 1
+  fireDMG: 1
+  waterDMG: 1
+  airDMG: 1
+  defense: 1
+  strength: 1
+  equippedHat: {fileID: 0}
+  equippedRune: {fileID: 0}
 --- !u!1 &912443850
 GameObject:
   m_ObjectHideFlags: 0
@@ -2940,7 +2969,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 990, y: 791}
+  m_AnchoredPosition: {x: 790, y: 783}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1034472794
@@ -4767,7 +4796,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 751, y: 241}
+  m_AnchoredPosition: {x: 726, y: 233}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1742740980
@@ -4864,7 +4893,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -453.23267, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5251,7 +5280,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 972, y: 666}
+  m_AnchoredPosition: {x: 972, y: 518}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1913048120
@@ -5424,6 +5453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   battleUI: {fileID: 549364768}
+  inventoryUI: {fileID: 0}
   enemyRawImage: {fileID: 1913048121}
   enemyNameText: {fileID: 1034472795}
   enemyHPText: {fileID: 698523995}

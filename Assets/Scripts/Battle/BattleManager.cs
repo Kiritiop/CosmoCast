@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static InventoryUI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class BattleManager : MonoBehaviour
 
     [Header("Battle UI Root")]
     [SerializeField] private GameObject battleUI;
+    [SerializeField] private GameObject inventoryUI;
+
 
     [Header("Enemy Display")]
     [SerializeField] private RawImage enemyRawImage;   // assign a RawImage in top-right of battle UI
@@ -45,8 +48,6 @@ public class BattleManager : MonoBehaviour
 
     private RenderTexture _previewRT;
     private GameObject _previewClone;
-
-    // Layer named "EnemyPreview" — set this up in Project Settings > Tags and Layers
     private const string PreviewLayer = "EnemyPreview";
 
     void Awake()
@@ -119,11 +120,6 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(PlayerAttackRoutine(damage));
     }
 
-    // Called by Item button
-    public void UseItem()
-    {
-        // TODO: open inventory potions tab
-    }
 
     // Called by Flee button
     public void FleeBattle()

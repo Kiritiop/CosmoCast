@@ -37,7 +37,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
+    public void DisplayInventory(Vector3 startPosition, Vector3 spacingOffset)
     {
         this._isInvOpen = true;
         PlayerMovement.IsInventoryOpen = true;
