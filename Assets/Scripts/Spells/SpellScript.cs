@@ -25,10 +25,10 @@ public class Person : MonoBehaviour
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
         CurrentHealth = maxHealth;
-        LearnSpell(new Spell("Fireball", new Damage(20, "fire")));
-        LearnSpell(new Spell("Boulder", new Damage(20, "earth")));
-        LearnSpell(new Spell("IceShards", new Damage(20, "water")));
-        LearnSpell(new Spell("LightBreeze", new Damage(20, "air")));
+        LearnSpell(new Spell("Fireball", new Damage(20, Element.Fire)));
+        LearnSpell(new Spell("Boulder", new Damage(20, Element.Earth)));
+        LearnSpell(new Spell("IceShards", new Damage(20, Element.Water)));
+        LearnSpell(new Spell("LightBreeze", new Damage(20, Element.Air)));
     }
 
     
@@ -81,22 +81,22 @@ public class Player : Person
         // Create starter spells
         Spell fireBall = ScriptableObject.CreateInstance<Spell>();
         fireBall.spellName = "Fireball";
-        fireBall.damage = new Damage(20, "fire");
+        fireBall.damage = new Damage(20, Element.Fire);
         LearnSpell(fireBall);
 
         Spell iceShards = ScriptableObject.CreateInstance<Spell>();
         iceShards.spellName = "Ice Shards";
-        iceShards.damage = new Damage(20, "water");
+        iceShards.damage = new Damage(20, Element.Water);
         LearnSpell(iceShards);
 
         Spell earthSpike = ScriptableObject.CreateInstance<Spell>();
         earthSpike.spellName = "Earth Spike";
-        earthSpike.damage = new Damage(20, "earth");
+        earthSpike.damage = new Damage(20, Element.Earth);
         LearnSpell(earthSpike);
 
         Spell lightBreeze = ScriptableObject.CreateInstance<Spell>();
         lightBreeze.spellName = "Light Breeze";
-        lightBreeze.damage = new Damage(20, "air");
+        lightBreeze.damage = new Damage(20, Element.Air);
         LearnSpell(lightBreeze);
     }
 
@@ -158,19 +158,19 @@ public class Spell : ScriptableObject
             target.Inflict(this._effect);
             return;
         }
-        if (this.damage.GetElement() == "water")
+        if (this.damage.GetElement() == Element.Water)
         {
             target.TakeDamage( new Damage(this.damage.GetDamage() * caster.waterDMG, this.damage.GetElement()));
         }
-        else if (this.damage.GetElement() == "fire")
+        else if (this.damage.GetElement() == Element.Fire)
         {
             target.TakeDamage(new Damage(this.damage.GetDamage() * caster.fireDMG, this.damage.GetElement()));
         }
-        else if (this.damage.GetElement() == "earth")
+        else if (this.damage.GetElement() == Element.Earth)
         {
             target.TakeDamage(new Damage(this.damage.GetDamage() * caster.earthDMG, this.damage.GetElement()));
         }
-        else if(this.damage.GetElement() == "air")
+        else if(this.damage.GetElement() == Element.Air)
         {
             target.TakeDamage(new Damage(this.damage.GetDamage() * caster.airDMG, this.damage.GetElement()));
         }
@@ -204,7 +204,7 @@ public class Effect
 }
 public class Burn : Effect //deals set damage every round end
 {
-    public Burn(int count, int effectTier) : base(new Damage(5, "fire"), count, "Immolate", effectTier) { }
+    public Burn(int count, int effectTier) : base(new Damage(5, Element.Fire), count, "Immolate", effectTier) { }
 
     public override double Activate() // ac
     {
@@ -216,7 +216,7 @@ public class Burn : Effect //deals set damage every round end
 public class WaterPrism : Effect //stores damage over a set amount of turns, multiplies and applies them all at once when it expires
 {
     private Damage _storedDamage;
-    public WaterPrism(int count, int effectTier) : base(new Damage(0, "water"), count, "WaterPrism", effectTier) { }
+    public WaterPrism(int count, int effectTier) : base(new Damage(0, Element.Water), count, "WaterPrism", effectTier) { }
 
     public override double Activate() // activates once turn ends with one count
     {
@@ -229,7 +229,7 @@ public class WaterPrism : Effect //stores damage over a set amount of turns, mul
 public class Impaled : Effect //deals damage every time the enemy makes an action
 {
     public int spikenumber;
-    public Impaled(int count, int spikenumber) : base(new Damage(5, "normal"), count, "Impaled", 0)
+    public Impaled(int count, int spikenumber) : base(new Damage(5, Element.Earth), count, "Impaled", 0)
     {
         this.spikenumber = spikenumber;
     }
@@ -253,13 +253,19 @@ public class Impaled : Effect //deals damage every time the enemy makes an actio
     }
 
 }
-
+public enum Element
+{
+    Fire,
+    Water,
+    Earth,
+    Air,
+}
 public class Damage
 {
     private float _value;
-    private string element;
+    private Element element;
 
-    public Damage(float value, string element)
+    public Damage(float value, Element element)
     {
         this._value = value;
         this.element = element;
@@ -269,7 +275,7 @@ public class Damage
     {
         return this._value;
     }
-    public string GetElement()
+    public Element GetElement()
     {
         return this.element;
     }
