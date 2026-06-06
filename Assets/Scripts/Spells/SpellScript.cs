@@ -236,7 +236,20 @@ public class Impaled : Effect //deals damage every time the enemy makes an actio
 
     public override double Activate()
     {
-        return spikenumber * this._baseDamage.GetDamage();
+        if (this._count == 0)
+        {
+            return this.Burst(this.spikenumber);
+        }
+        return this.spikenumber * this._baseDamage.GetDamage();
+    }
+
+    public int Burst(int spikes)
+    {
+        if (spikes > 0)
+        {
+            return spikes * Burst(spikes - 1);
+        }
+        return 0;
     }
 
 }
