@@ -32,6 +32,33 @@ public class InventoryManager : MonoBehaviour
         else if (item is Potion p) _potions.Remove(p);
         else Debug.Log("Unknown item type");
     }
+
+    private int RarityOrder(string rarity)
+    {
+        return rarity switch
+        {
+            "Legendary" => 0,
+            "Epic"      => 1,
+            "Rare"      => 2,
+            "Common"    => 3,
+            _           => 4
+        };
+    }
+
+    public void SortByRarity()
+    {
+        _potions.Sort((a, b) => RarityOrder(a.Rarity).CompareTo(RarityOrder(b.Rarity)));
+        _hats.Sort((a, b) => RarityOrder(a.Rarity).CompareTo(RarityOrder(b.Rarity)));
+        _runes.Sort((a, b) => RarityOrder(a.Rarity).CompareTo(RarityOrder(b.Rarity)));
+    }
+
+    public void SortByName()
+    {
+        _potions.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+        _hats.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+        _runes.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+    }
+
     public ItemList<Potion> GetPotions() { return _potions; }
     public ItemList<Hat> GetHats() { return _hats; }
     public ItemList<Rune> GetRunes() { return _runes; }

@@ -7,6 +7,8 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject Inventory_Bg;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private Transform slotContainer;
+    private enum Tab { Potions, Hats, Runes }
+    private Tab _currentTab;
     private bool _isInvOpen;
 
     public void Start()
@@ -25,6 +27,13 @@ public class InventoryUI : MonoBehaviour
             DisplayInventory();
         else if (Keyboard.current.eKey.wasPressedThisFrame && _isInvOpen)
             CloseInventory();
+    }
+
+    public void OnSortChanged(int index)
+    {
+        if (index == 0) InventoryManager.Instance.SortByRarity();
+        else if (index == 1) InventoryManager.Instance.SortByName();
+        RefreshCurrentTab();
     }
 
     private void DisplayInventory()
@@ -65,18 +74,40 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public void OnSortByRarity()
+    {
+        InventoryManager.Instance.SortByRarity();
+        RefreshCurrentTab();
+    }
+
+    public void OnSortByName()
+    {
+        InventoryManager.Instance.SortByName();
+        RefreshCurrentTab();
+    }
+
+    private void RefreshCurrentTab()
+    {
+        if (_currentTab == Tab.Potions)      DisplayPotions();
+        else if (_currentTab == Tab.Hats)    DisplayHats();
+        else if (_currentTab == Tab.Runes)   DisplayRunes();
+    }
+
     public void DisplayPotions()
     {
+        _currentTab = Tab.Potions;
         PopulateSlots(InventoryManager.Instance.GetPotions());
     }
 
     public void DisplayHats()
     {
+        _currentTab = Tab.Hats;
         PopulateSlots(InventoryManager.Instance.GetHats());
     }
 
     public void DisplayRunes()
     {
+        _currentTab = Tab.Runes;
         PopulateSlots(InventoryManager.Instance.GetRunes());
     }
 }

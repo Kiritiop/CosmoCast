@@ -80,4 +80,20 @@ public class ItemList<T> where T : Item
         return _cursor;
     }
 
+    public void Sort(System.Comparison<T> comparison)
+    {
+        for (int i = 0; i < _cursor - 1; i++)
+        {
+            for (int j = 0; j < _cursor - i - 1; j++)
+            {
+                if (comparison(_items[j], _items[j + 1]) > 0)
+                {
+                    T temp = _items[j];
+                    _items[j] = _items[j + 1];
+                    _items[j + 1] = temp;
+                }
+            }
+        }
+    }
+
 }
