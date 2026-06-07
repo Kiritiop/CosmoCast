@@ -109,19 +109,19 @@ public class Player : Person
     {
         if (Keyboard.current.zKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-            spellbook[0].Cast(this, BattleManager.Instance.Enemy);
+             // spellbook[0].Cast(this, BattleManager.Instance.Enemy);
         }
         else if (Keyboard.current.xKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-            spellbook[1].Cast(this, BattleManager.Instance.Enemy);
+           //  spellbook[1].Cast(this, BattleManager.Instance.Enemy);
         }
         else if (Keyboard.current.cKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-            spellbook[2].Cast(this, BattleManager.Instance.Enemy);
+          //  spellbook[2].Cast(this, BattleManager.Instance.Enemy);
         }
         else if (Keyboard.current.vKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-            spellbook[3].Cast(this, BattleManager.Instance.Enemy);
+          //  spellbook[3].Cast(this, BattleManager.Instance.Enemy);
         }
     }
 }

@@ -65,4 +65,19 @@ public class ItemList<T> where T : Item
         return -1;
     }
 
+    public T Get(int index)
+    {
+        if (index < 0 || index >= _cursor)
+        {
+            Debug.Log("Invalid index");
+            return null;
+        }
+        return _items[index];
+    }
+
+    public int Count()
+    {
+        return _cursor;
+    }
+
 }
