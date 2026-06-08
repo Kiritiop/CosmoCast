@@ -25,6 +25,7 @@ public class Hat : Item
         PlayerStats.Instance.airDMG *= airMulti;
         PlayerStats.Instance.fireDMG *= fireMulti;
         PlayerStats.Instance.defense += defense;
+        Debug.Log($"Equipped {Name} | Earth: {PlayerStats.Instance.earthDMG} Fire: {PlayerStats.Instance.fireDMG} Defense: {PlayerStats.Instance.defense}");
     }
 
     public void Unequip()

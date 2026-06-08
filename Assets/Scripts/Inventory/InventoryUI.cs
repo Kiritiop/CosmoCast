@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -10,6 +11,28 @@ public class InventoryUI : MonoBehaviour
     private enum Tab { Potions, Hats, Runes }
     private Tab _currentTab;
     private bool _isInvOpen;
+    [SerializeField] private TMP_InputField searchField;
+
+    public void OnSearch()
+    {
+        string name = searchField.text;
+        ClearSlots();
+        SearchAndDisplay(InventoryManager.Instance.GetPotions(), name);
+        SearchAndDisplay(InventoryManager.Instance.GetHats(), name);
+        SearchAndDisplay(InventoryManager.Instance.GetRunes(), name);
+    }
+
+    private void SearchAndDisplay<T>(ItemList<T> list, string name) where T : Item
+    {
+        for (int i = 0; i < list.Count(); i++)
+        {
+            if (string.Equals(list.Get(i).Name, name, System.StringComparison.OrdinalIgnoreCase))
+            {
+                GameObject slot = Instantiate(slotPrefab, slotContainer);
+                slot.GetComponent<InventorySlot>().Setup(list.Get(i), this);
+            }
+        }
+    }
 
     public void Start()
     {
@@ -23,6 +46,8 @@ public class InventoryUI : MonoBehaviour
 
     public void ReadInput()
     {
+        if (searchField.isFocused) return;
+        
         if (Keyboard.current.eKey.wasPressedThisFrame && !_isInvOpen)
             DisplayInventory();
         else if (Keyboard.current.eKey.wasPressedThisFrame && _isInvOpen)
@@ -70,7 +95,7 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < list.Count(); i++)
         {
             GameObject slot = Instantiate(slotPrefab, slotContainer);
-            slot.GetComponent<Image>().sprite = list.Get(i).Icon;
+            slot.GetComponent<InventorySlot>().Setup(list.Get(i), this);
         }
     }
 
@@ -86,7 +111,7 @@ public class InventoryUI : MonoBehaviour
         RefreshCurrentTab();
     }
 
-    private void RefreshCurrentTab()
+    public void RefreshCurrentTab()
     {
         if (_currentTab == Tab.Potions)      DisplayPotions();
         else if (_currentTab == Tab.Hats)    DisplayHats();
