@@ -9,7 +9,7 @@ public class EnemyData : ScriptableObject
     public int attackDamage = 5;
     public int coinReward = 100;
 
-    // Sorts enemies ascending by maxHP using Array.Sort with a Comparison delegate.
+    // Sorts enemies ascending by maxHP using Array.Sort.
     public static void SortByHP(EnemyData[] enemies)
     {
         Array.Sort(enemies, (a, b) => a.maxHP.CompareTo(b.maxHP));

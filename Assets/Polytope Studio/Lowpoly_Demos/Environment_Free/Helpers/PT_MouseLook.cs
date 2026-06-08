@@ -21,6 +21,8 @@ public class PT_MouseLook : MonoBehaviour
 
     void Update()
     {
+        if (UIManager.Instance != null && UIManager.Instance.IsPaused) return;
+
         // ── Input ────────────────────────────────────────────────────────────
         float mouseX = 0f;
         float mouseY = 0f;

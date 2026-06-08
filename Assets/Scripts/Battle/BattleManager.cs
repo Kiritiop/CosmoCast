@@ -34,10 +34,11 @@ public class BattleManager : MonoBehaviour
 
     public bool IsInBattle { get; private set; }
 
+// These variables are private and are only changed through public methods
+// such as PlayerAttack() and StartBattle(), prevents battle corruption
     private int _turn = -1;
     private bool _awaitingPlayerAction;
     private int _playerComboCount = 0;
-
     private EnemyData _currentEnemy;
     private int _enemyCurrentHP;
     private GameObject _enemyObject;

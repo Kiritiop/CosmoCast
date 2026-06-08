@@ -96,8 +96,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMouseLook()
     {
-
-        if (IsInventoryOpen) return;
+        bool paused = UIManager.Instance != null && UIManager.Instance.IsPaused;
+        if (IsInventoryOpen || paused) return;
 
         _xRotation -= _lookInput.y * mouseSensitivity;
         _xRotation = Mathf.Clamp(_xRotation, -85f, 85f);
