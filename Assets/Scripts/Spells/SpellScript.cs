@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -65,8 +66,49 @@ public class Person : MonoBehaviour
         }
     }
 
+    public static void SortSpells<S>(List<S> spellbook, Comparison<S> comparison, int low = 0, int high = -1)
+    {
+        if (high == -1)
+        {
+            high = spellbook.Count - 1;
+        }
+
+        if (low < high)
+        {
+            int partitionIndex = Partition(spellbook, comparison, low, high);
+            SortSpells(spellbook, comparison, low, partitionIndex - 1);
+            SortSpells(spellbook, comparison, partitionIndex + 1, high);
+        }
+    }
+
+    private static int Partition<S>(List<S> spellbook, Comparison<S> comparison, int low, int high)
+    {
+        S pivot = spellbook[high];
+        int i = low - 1;
+
+        for (int j = low; j < high; j++)
+        {
+            if (comparison(spellbook[j], pivot) < 0)
+            {
+                i++;
+                Swap(spellbook, i, j);
+            }
+        }
+        Swap(spellbook, i + 1, high);
+        return i + 1;
+    }
+
+    private static void Swap<S>(List<S> spellbook, int i, int j)
+    {
+        S temp = spellbook[i];
+        spellbook[i] = spellbook[j];
+        spellbook[j] = temp;
+    }
+
 
 }
+
+
 public class Player : Person
 {
     [SerializeField] private string playerName = "Player";
@@ -98,6 +140,9 @@ public class Player : Person
         lightBreeze.spellName = "Light Breeze";
         lightBreeze.damage = new Damage(20, Element.Air);
         LearnSpell(lightBreeze);
+
+        SortSpells(spellbook, (spell1, spell2) => spell1.damage.GetElement().CompareTo(spell2.damage.GetElement()));
+
     }
 
     public string GetPlayerName()
@@ -109,19 +154,19 @@ public class Player : Person
     {
         if (Keyboard.current.zKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-             // spellbook[0].Cast(this, BattleManager.Instance.Enemy);
+             // spellbook[0].Cast(this, BattleManager.Instance.Enemy); SUNEEL FIX PLS
         }
         else if (Keyboard.current.xKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-           //  spellbook[1].Cast(this, BattleManager.Instance.Enemy);
+            //  spellbook[1].Cast(this, BattleManager.Instance.Enemy); SUNEEL FIX PLS
         }
         else if (Keyboard.current.cKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-          //  spellbook[2].Cast(this, BattleManager.Instance.Enemy);
+            //  spellbook[2].Cast(this, BattleManager.Instance.Enemy); SUNEEL FIX PLS
         }
         else if (Keyboard.current.vKey.wasPressedThisFrame && BattleManager.Instance.IsInBattle)
         {
-          //  spellbook[3].Cast(this, BattleManager.Instance.Enemy);
+            //  spellbook[3].Cast(this, BattleManager.Instance.Enemy); SUNEEL FIX PLS
         }
     }
 }
